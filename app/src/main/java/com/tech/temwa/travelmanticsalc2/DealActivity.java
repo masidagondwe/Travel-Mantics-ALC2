@@ -99,7 +99,7 @@ public class DealActivity extends AppCompatActivity {
             menu.findItem(R.id.delete_menu).setVisible(false);
             menu.findItem(R.id.save_menu).setVisible(false);
             enableEditTexts(false);
-            findViewById(R.id.btnImage).setEnabled(false);
+            //findViewById(R.id.btnImage).setEnabled(false);
             findViewById(R.id.btnImage).setVisibility(View.GONE);
         }
 
