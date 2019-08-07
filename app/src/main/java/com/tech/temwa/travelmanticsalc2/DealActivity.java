@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
@@ -27,12 +26,13 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 public class DealActivity extends AppCompatActivity {
-    private FirebaseDatabase mFirebaseDatabase;
+    protected FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
     private static final int PICTURE_RESULT = 42; //the answer to everything
     EditText txtTitle;
     EditText txtDescription;
     EditText txtPrice;
+    EditText txtHeading;
     ImageView imageView;
     TravelDeal deal;
     @Override
@@ -44,6 +44,7 @@ public class DealActivity extends AppCompatActivity {
         txtTitle = findViewById(R.id.txtTitle);
         txtDescription = findViewById(R.id.txtDescription);
         txtPrice = findViewById(R.id.txtPrice);
+        txtHeading  = findViewById(R.id.txtHeading);
         imageView = findViewById(R.id.image);
         Intent intent = getIntent();
         TravelDeal deal = (TravelDeal) intent.getSerializableExtra("Deal");
@@ -95,15 +96,15 @@ public class DealActivity extends AppCompatActivity {
             menu.findItem(R.id.delete_menu).setVisible(true);
             menu.findItem(R.id.save_menu).setVisible(true);
             enableEditTexts(true);
+            txtHeading.setText("Edit Travel Deal");
         }
         else {
             menu.findItem(R.id.delete_menu).setVisible(false);
             menu.findItem(R.id.save_menu).setVisible(false);
             enableEditTexts(false);
-           // menu.findItem(R.id.btnImage).setVisible(false);
+            findViewById(R.id.btnImage).setVisibility(View.GONE);
+            txtHeading.setText("View Travel Deal");
         }
-
-
         return true;
     }
 
@@ -117,9 +118,9 @@ public class DealActivity extends AppCompatActivity {
             ref.putFile(imageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    String pictureName = taskSnapshot.getMetadata().getReference().getPath();
+                    String pictureName = taskSnapshot.getStorage().getPath();
                     deal.setImageName(pictureName);
-                    ref.getPath();
+                   // ref.getPath();
                     ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -136,6 +137,7 @@ public class DealActivity extends AppCompatActivity {
         deal.setTitle(txtTitle.getText().toString());
         deal.setDescription(txtDescription.getText().toString());
         deal.setPrice(txtPrice.getText().toString());
+
         if(deal.getId()==null) {
             mDatabaseReference.push().setValue(deal);
         }
